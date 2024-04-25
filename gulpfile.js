@@ -8,8 +8,6 @@ const autoprefixer = require('gulp-autoprefixer');
 const clean = require('gulp-clean');
 const imagemin = require('gulp-imagemin');
 
-const parseString = require('xml2js').parseString;
-
 const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "" );
 //const $ = require( "jquery" )( window );
@@ -122,7 +120,6 @@ exports.screenshot = screenshot;
 exports.watching = watching;
 exports.browsersync = browsersync;
 exports.build = series(cleanDist, building);
-module.exports.parseString = parseString;
 
 //exports.default = parallel(styles, scripts, browsersync, watching);
 exports.default = parallel(php, styles, scripts, screenshot, main_style, browsersync, watching);

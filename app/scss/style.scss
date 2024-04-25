@@ -1,2 +1,91 @@
-body{
+@import 'reset';
+
+.header{
+    display: flex;
+    width: 100%;
+    margin: 20px 0;
+    justify-content: center;
+    &__title{
+        font-size: 36px;
+        color: blue;
+    }
+
 }
+
+.content{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.form{
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    row-gap: 15px;
+    width: 350px;
+}
+
+.form label{
+    grid-column: 1/11;
+}
+
+.form input{
+    grid-column: 12/25;
+}
+.form button{
+
+    grid-column: 1/25;
+    width: 100px;
+    justify-self: center;
+}
+
+.tabs{
+    display: flex;
+    &__tab{
+        margin: 5px 10px;
+    }
+    &__tab:hover{
+        cursor: pointer;
+    }
+}
+
+.highlighted{
+    position: relative;
+}
+
+.highlighted::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    border-bottom:2px solid  #13406d;
+    width: 100%;
+}
+
+
+.currency_rate{
+    display: flex;
+    justify-content: center;
+    &__table{
+        width: 60%;
+        border-collapse: collapse;
+    }
+
+    &__table th{
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+    }
+    &__table th,
+    &__table td{
+        background-color: inherit;
+        border: 1px solid black;
+        
+    }
+}
+
+
+
+
+
+
+

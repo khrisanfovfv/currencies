@@ -1,4 +1,6 @@
 <?php 
+
+require_once('currency.php');
 class CurrenciesFN{
     public $url = '';
     public function __construct() {
@@ -21,13 +23,66 @@ class CurrenciesFN{
 
     function get_currency_rate(){
         //$date = $_POST['date'];
-        $content = file_get_contents($this->url);
-        if ($content){
-            echo $content;
-        } else {
-            wp_die('При выполнении запроса ' . $this->url . 'Произошла ошибка', 'Ошибка', array('responce' => 500));
+        
+        //$content = file_get_contents($this->url);
+        $reader = new XMLReader();
+        $rates = [];
+        $date ='';
+
+        if ($reader->open($this->url)){
+            while($reader->read()) {
+
+                if ($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'ValCurs'){
+                    $date = $reader->getAttribute('Date');
+                }
+
+
+                if ($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Valute'){
+                    $rate = new Currency();
+                    $rate->id = $reader->getAttribute('ID');
+
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'NumCode') {
+                    $reader->read();
+                    $rate->num_code = $reader->value;
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'CharCode') {
+                    $reader->read();
+                    $rate->char_code = $reader->value;
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Nominal') {
+                    $reader->read();
+                    $rate->nominal = $reader->value;
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Name') {
+                    $reader->read();
+                    $rate->name = $reader->value;
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Value') {
+                    $reader->read();
+                    $rate->value = $reader->value;
+                }
+
+                if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'VunitRate') {
+                    $reader->read();
+                    $rate->vinit_rate = $reader->value;
+                }
+                    
+                $rate->date = $date;
+
+                if ($reader->nodeType == XMLReader::END_ELEMENT && $reader->localName == 'Valute'){
+                    array_push($rates, $rate);
+                }
+            }
+            print_r($rates);
+        } else{
+             wp_die('При выполнении запроса ' . $this->url . 'Произошла ошибка', 'Ошибка', array('responce' => 500));
         }
-        echo $content;
         wp_die();
     }
 }
