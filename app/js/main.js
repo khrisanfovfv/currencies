@@ -104,7 +104,6 @@ function draw_chart(rate){
     var gctx = canvas.getContext("2d");
     gctx.fillStyle = '#0046f5';
     gctx.font = '46px serif';
-    gctx.fillText('plus2net.com', 100, 150);
 }
 
     

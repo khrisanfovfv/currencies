@@ -7,7 +7,6 @@ const autoprefixer = require('gulp-autoprefixer');
 
 const clean = require('gulp-clean');
 const imagemin = require('gulp-imagemin');
-var fs = require('fs');
 
 const destFolder = 'C:/OSPanel/domains/currencies/wp-content/themes/currencies/';
 
@@ -38,17 +37,6 @@ function php(){
 
 
 
-// function json(){
-//     return src(['app/resources.json'])
-//     .pipe(dest(destFolder))
-// }
-
-// function jquery_style(){
-//     return src(['app/plugins/jquery-ui-1.13.2/jquery-ui.css'])
-//     .pipe(dest(destFolder + 'css/'));
-// }
-
-
 
 function scripts(){
     return src([
@@ -57,7 +45,7 @@ function scripts(){
         'app/js/main.js'
     ])
     .pipe(concat('main.min.js'))
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(dest(destFolder + 'js/'))
     .pipe(browserSync.stream())
 }
@@ -111,12 +99,9 @@ exports.images = images;
 exports.php = php;
 exports.screenshot = screenshot;
 
-//exports.json = json;
-//exports.jquery_style = jquery_style;
 
 exports.watching = watching;
 exports.browsersync = browsersync;
 exports.build = series(cleanDist, building);
 
-//exports.default = parallel(styles, scripts, browsersync, watching);
 exports.default = parallel(php, styles, scripts, screenshot, main_style, browsersync, watching);
