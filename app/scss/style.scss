@@ -32,12 +32,18 @@
 .form input{
     grid-column: 12/25;
 }
-.form button{
-
+.form .button_container{
+    display: flex;
+    width: 250px;
     grid-column: 1/25;
-    width: 100px;
+    justify-content: space-between;
     justify-self: center;
 }
+
+.form .button_container button{
+    width: 100px;
+}
+
 
 .tabs{
     display: flex;

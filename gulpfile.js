@@ -7,10 +7,7 @@ const autoprefixer = require('gulp-autoprefixer');
 
 const clean = require('gulp-clean');
 const imagemin = require('gulp-imagemin');
-
-const { JSDOM } = require( "jsdom" );
-const { window } = new JSDOM( "" );
-//const $ = require( "jquery" )( window );
+var fs = require('fs');
 
 const destFolder = 'C:/OSPanel/domains/currencies/wp-content/themes/currencies/';
 

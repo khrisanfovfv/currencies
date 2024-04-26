@@ -10,7 +10,10 @@
                 <input type="date" id="startDate" >
                 <label for="endDate" >Конечная дата</label>
                 <input type="date" id="endDate">
-            <button id="submit">OK</button>
+                <div class="button_container">
+                    <button id="submit">Таблица</button>
+                    <button id="out_to_json">JSON</button>
+                </div>
         </form>
     </div>
 
@@ -35,6 +38,12 @@
             </tbody>
         </table>
     </section>
-    <section class="chart"></section>
+    <section class="chart">
+    <div class="chart__canvas-wrapper">
+      <canvas id="canvas" width="500" height="250">
+        Браузер не поддерживает Canvas
+      </canvas>
+    </div>
+    </section>
 </main>
 <?php get_footer(); ?>
