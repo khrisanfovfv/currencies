@@ -1,4 +1,5 @@
-<?php get_header(); ?>
+<?php get_header(); 
+?>
 <header class="header">
     <h1 class="header__title">Курсы валют</h1>
 </header>
@@ -6,8 +7,8 @@
     <div class="content">
         <form class="form" id="form" action="#">
                 <label for="startDate">Начальная дата</label>
-                <input type="date" id="startDate">
-                <label for="endDate">Конечная дата</label>
+                <input type="date" id="startDate" >
+                <label for="endDate" >Конечная дата</label>
                 <input type="date" id="endDate">
             <button id="submit">OK</button>
         </form>
@@ -25,8 +26,10 @@
                 <th>ИД</th>
                 <th>Код</th>
                 <th>Номинал</th>
+                <th>Название</th>
                 <th>Значение</th>
                 <th>Курс за единицу</th>
+                <th>Дата</th>
             </thead>
             <tbody>
             </tbody>

@@ -9,7 +9,7 @@ class Currency{
     public $nominal;
     public $name;
     public $value;
-    public $vinit_rate;
+    public $vunit_rate;
     public $date;
 }
 
