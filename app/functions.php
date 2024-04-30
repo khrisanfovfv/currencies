@@ -1,16 +1,22 @@
 <?php
 
 require_once('currency.php');
+require_once('sql.php');
 class CurrenciesFN
 {
     public $url = '';
+    protected $sql;
     public function __construct()
     {
         add_action('after_switch_theme', array($this, 'activate_currencies_theme'), 10, 2);
         add_action('wp_enqueue_scripts', array($this, 'currencies_scripts'));
         add_action('wp_ajax_nopriv_get_currency_rate', array($this, 'get_currency_rate'));
-        add_action('wp_ajax_nopriv_count_currency_records', array($this, 'count_currency_records'));
+        add_action('wp_ajax_nopriv_select_from_database', array('CSQL', 'select_from_database'));
+        add_action('wp_ajax_nopriv_count_currency_records', array('CSQL', 'count_currency_records'));
+        add_action('wp_ajax_nopriv_get_currency_name_list', array('CSQL', 'get_currency_name_list'));
+        add_action('wp_ajax_nopriv_get_chart_data', array('CSQL','get_chart_data'));
         $this->url = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req=02/03/2002';
+        $this->sql = new CSQL('currency_rate');
     }
 
     /**
@@ -58,6 +64,7 @@ class CurrenciesFN
         // Передаем переменную ajaxurl в main.js
         wp_localize_script('main_script', 'MainData', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'images' => get_template_directory_uri() . '/images/',
             'nonce' => wp_create_nonce('currencies')
         ));
     }
@@ -65,15 +72,14 @@ class CurrenciesFN
     function get_currency_rate()
     {
         // Очищаем базу данных 
-        $this->truncate_table();
-
+        $this->sql->truncate_table();
         $startDate = date("d-m-Y", strtotime($_POST['startDate']));
         $endDate = date("d-m-Y", strtotime($_POST['endDate']));
         if (($_POST['startDate'] != '') && ($_POST['endDate'] == '')) {
             $rates = $this->request_currencies($startDate);
             // Вставляем строки в базу данных
             foreach ($rates as $rate) {
-                $this->insert_to_database($rate);
+                $this->sql->insert_to_database($rate);
             }
         }
 
@@ -81,7 +87,7 @@ class CurrenciesFN
             $rates = $this->request_currencies($endDate);
             // Вставляем строки в базу данных
             foreach ($rates as $rate) {
-                $this->insert_to_database($rate);
+                $this->sql->insert_to_database($rate);
             }
         }
 
@@ -101,14 +107,14 @@ class CurrenciesFN
                     $date =  date("d/m/Y", strtotime($startDate . " +$i day"));
                     // Вставляем строки в базу данных
                     foreach ($rates as $rate) {
-                        $this->insert_to_database($rate);
+                        $this->sql->insert_to_database($rate);
                     }
                 }
             }
         }
 
         // Считываем значения базы данных
-        $this->select_from_database();
+        echo 'Данные загружены';
         wp_die();
     }
 
@@ -173,120 +179,8 @@ class CurrenciesFN
             wp_die('При выполнении запроса ' . $this->url . 'Произошла ошибка', 'Ошибка', array('responce' => 500));
         }
     }
-
-    /**
-     * ОЧИЩАЕМ БАЗУ ДАННЫХ
-     */
-
-    function truncate_table()
-    {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'currency_rate';
-        $wpdb->query("TRUNCATE $table_name")
-            or wp_die($wpdb->last_error, 'Ошибка', array('response' => 500));
-    }
-
-    /** 
-     * ВСТАВЛЯЕМ ЗНАЧЕНИЯ МАССИВА В БАЗУ ДАННЫХ 
-     * */
-    function insert_to_database($rate)
-    {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'currency_rate';
-        $wpdb->insert(
-            $table_name,
-            array(
-                'cur_id' => $rate->id,
-                'num_code' => $rate->num_code,
-                'char_code' => $rate->char_code,
-                'nominal' => $rate->nominal,
-                'name' => $rate->name,
-                'value' => $rate->value,
-                'vunit_rate' => $rate->vunit_rate,
-                'date' => $rate->date,
-            ),
-            array(
-                '%s', // cur_id
-                '%s', // num_code
-                '%s', // char_code
-                '%d', // nominal
-                '%s', // name
-                '%s', // value
-                '%s', // vunit_rate
-                '%s', // date
-            )
-        ) or wp_die($wpdb->last_error, 'Ошибка', array('response' => 500));
-    }
-
-    /**
-     * ============ ПОЛУЧАЕМ КОЛИЧЕСТВО СТРОК ============
-     */
-    function count_currency_records(){
-        global $wpdb;
-        $prefix = $wpdb->prefix;
-        $table_name = $prefix . 'currency_rate';
-        $count = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-        if ($wpdb->last_error){
-            wp_die($wpdb->last_error,'Ошибка', array('response' => 500));
-        }
-        echo $count;
-        wp_die();
-    }
-
-    /**
-     * ========= ИЗВЛЕКАЕМ ЗНАЧЕНИЯ ИЗ БАЗЫ ДАННЫХ ==========
-     */
-    function select_from_database()
-    {
-        global $wpdb;
-        $skip = $_POST['skip'];
-        $count = $_POST['count'];
-        $wild = '%';
-
-        $like_filter_id             =       $wild . $wpdb->esc_like($_POST['filter_id']) .$wild;
-        $like_filter_cur_id         =       $wild . $wpdb->esc_like($_POST['filter_cur_id']) .$wild;
-        $like_filter_num_code       =       $wild . $wpdb->esc_like($_POST['filter_num_code']) .$wild;
-        $like_filter_char_code      =       $wild . $wpdb->esc_like($_POST['filter_char_code']) .$wild;
-        $like_filter_nominal        =       $wild . $wpdb->esc_like($_POST['filter_nominal']) .$wild;
-        $like_filter_name           =       $wild . $wpdb->esc_like($_POST['filter_name']) .$wild;
-        $like_filter_value          =       $wild . $wpdb->esc_like($_POST['filter_value']) .$wild;
-        $like_filter_vunit_rate     =       $wild . $wpdb->esc_like($_POST['filter_vunit_rate']) .$wild;
-        $like_filter_date           =       $wild . $wpdb->esc_like($_POST['filter_date']) .$wild;
-
-        $prefix = $wpdb->prefix;
-        $table_name = $prefix . 'currency_rate';
-        $results = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM $table_name
-            WHERE id LIKE %s 
-            AND cur_id LIKE %s 
-            AND num_code LIKE %s
-            AND char_code LIKE %s 
-            AND nominal LIKE %s 
-            AND name LIKE %s 
-            AND value LIKE %s
-            AND vunit_rate LIKE %s 
-            AND date like %s
-            LIMIT %d, %d",
-                array($like_filter_id, 
-                      $like_filter_cur_id, 
-                      $like_filter_num_code,
-                      $like_filter_char_code, 
-                      $like_filter_nominal, 
-                      $like_filter_name,
-                      $like_filter_value, 
-                      $like_filter_vunit_rate, 
-                      $like_filter_date,
-                      $skip, $count)
-            //--LIMIT $skip $count"
-            ), ARRAY_A
-        );
-        if ($wpdb->last_error){
-            wp_die($wpdb->last_error, 'Ошибка', array('response'=> 500));
-        }
-        echo json_encode($results);
-    }
 }
-
+    
 if (class_exists('CurrenciesFN')) {
     new CurrenciesFN();
 }

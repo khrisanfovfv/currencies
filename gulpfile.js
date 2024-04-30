@@ -11,9 +11,9 @@ const imagemin = require('gulp-imagemin');
 const destFolder = 'C:/OSPanel/domains/currencies/wp-content/themes/currencies/';
 
 function images(){
-    return src(['app/images/src/*.*', '!app/images/src/*.svg'])
-    .pipe(src('app/images/src/*.*'))
-    .pipe(imagemin())
+    return src(['app/images/*.*'])
+    .pipe(src('app/images/*.*'))
+    //.pipe(imagemin())
     .pipe(dest(destFolder +'images/'))
 }
 
@@ -104,4 +104,4 @@ exports.watching = watching;
 exports.browsersync = browsersync;
 exports.build = series(cleanDist, building);
 
-exports.default = parallel(php, styles, scripts, screenshot, main_style, browsersync, watching);
+exports.default = parallel(php, images, styles, scripts, screenshot, main_style, browsersync, watching);

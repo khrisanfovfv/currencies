@@ -1,5 +1,10 @@
 @import 'reset';
 
+html, body, main{
+    width: 100%;
+    height: 100%;
+}
+
 .header{
     display: flex;
     width: 100%;
@@ -17,20 +22,27 @@ main{
     flex-direction: row;
     justify-content: center;
     width: 100%;
+    height: 100%;
 }
 
 .content{
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width: 60%;
+    width: 70%;
+    align-items: stretch;
+    &__top{
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+    }
 }
 
 .form{
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     row-gap: 15px;
-    width: 350px;
+    width: 45%;
 }
 
 .form label{
@@ -40,16 +52,25 @@ main{
 .form input{
     grid-column: 12/25;
 }
+
+.form select{
+    grid-column: 12/25;
+    background-color: white;
+}
 .form .button_container{
     display: flex;
-    width: 250px;
+    width: 100%;
     grid-column: 1/25;
     justify-content: space-between;
     justify-self: center;
 }
 
 .form .button_container button{
-    width: 100px;
+    width: 150px;
+}
+
+#load_data{
+    width: 200px;
 }
 
 
@@ -82,7 +103,9 @@ main{
     display: flex;
     justify-content: center;
     flex-direction: column;
+    align-items: start;
     width: 100%;
+    height: 100%;
     &__table{
         border-collapse: collapse;
         width: 100%;
@@ -91,13 +114,28 @@ main{
     &__table th{
         font-family: 'Roboto', sans-serif;
         font-weight: 400;
+        position: relative;
+        padding: 0 2px;
     }
+
     &__table th,
     &__table td{
         background-color: inherit;
         border: 1px solid black;
         
     }
+}
+
+.order img{
+    position: absolute;
+    left: 85%;
+    top: 2px;
+    display: none;
+    width: 15px;
+}
+
+.show_order_img{
+    display: block !important;
 }
 
 .pagination{
@@ -129,6 +167,27 @@ main{
 
 .filter{
     width: 100%;
+}
+
+.chart{
+    margin-top: 20px;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    height: 100%;
+    margin-bottom: 20px;
+
+    &__canvas-wrapper{
+        height: 100%;
+        width: 100%;
+        border: thin solid grey;
+    }
+}
+.chart select{
+    margin-right: 10px ;
+}
+.chart input {
+    margin-right: 10px;
 }
 
 
