@@ -316,19 +316,21 @@ jQuery(function ($) {
             let value_per_pixel = (parseFloat(max.value)-parseFloat(min.value))/y_axis_height;
 
             // Вычисляем еденицу времени на пиксель
-            let start = new Date($('#chart_startDate').val());
-            let end = new Date($('#chart_endDate').val());
+            let start = new Date($('#chart_startDate')).getTime();
+            let end = new Date($('#chart_endDate')).getTime();
             let day = 1000*60*60*24;
             let interval = (end - start + day)/day;
             date_per_pixel = interval / x_axis_width;
 
             // Рисуем график
-            let xs = y_axis_height - values[0].date/ date_per_pixel;
-            let ys = values[0].value/value_per_pixel;
+            let date = new Date(values[0].date);
+            let xs = y_axis_height - date.getTime()/ date_per_pixel;
+            let ys = parseFloat(values[0].value)/value_per_pixel;
             gctx.moveTo(xs,ys);
             values.forEach(element=> {
-                x = element.date/date_per_pixel;
-                y = element.value/value_per_pixel;
+                date = new Date(element.date);
+                x = date.getTime()/date_per_pixel;
+                y = parseFloat(element.value)/value_per_pixel;
                 gctx.lineTo(x,y);
             })
 
