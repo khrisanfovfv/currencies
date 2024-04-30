@@ -1,31 +1,27 @@
 Данный сервис создан с помощью платфомы wordpress и gulp
 Для запуска нужно развернуть экземпляр wordpress на машине выполняюшей роль сервера
-на сервере создать базу данных currency_rate
+на сервере создать пустую базу данных currencies
 со следующими полями
-id - mediumint(9)
-cur_id - tinytext
-num_code - var_char(3)
-char_code - var_char(3)
-nominal - mediumint(11)
-name - tinytext
-value - tinytext
-vunit_rate - tinytext
-date - date
-Указать ее в настройках wordpress при установке
-Создать новую тему wordpress - каталог в папке currencies
 
-Далее нужно настроить gulp
-установить следующие расширения
-    "browser-sync": "^3.0.2",
-    "gulp": "^5.0.0",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-imagemin": "^7.1.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-uglify-es": "^3.0.0",
-    "jquery": "^3.7.1",
-    "jsdom": "^24.0.0",
-    "sass": "^1.75.0"
+Указать ее в настройках wordpress при установке(подробнее об установке wordpress https://wp-kama.ru/handbook/wordpress/ustanovka-wordpress?ysclid=lvjlq4yd7c815102029)
+Создать каталог в папке <Папка Wordpress>\wp-content\themes - назвать его currencies
+Далее при установке wordpress указать базу данных currencies и учетные данные для доступа к ней
+По завершении установки заходим на наш сайт wordpress с учетными данными указанными при установке
+
+Далее нужно настроить gulp глобально (подробности об установке https://gulpjs.su/docs/ru/getting-started/quick-start/)
+npm install --global gulp-cli
+
+Затем командой 
+npm install 
+
+установить все необходимые библиотеки из файла package.json проекта
 
 в константе destFolder файла gulpfile.js указать путь к каталогу wordpress
+
+запустить gulp
+командой gulp 
+В папке с темой <Папка Wordpress>\wp-content\themes\currencies должны сформироваться файлы проекта
+
+Далее в настройках wordpress нужно активировать тему Currencies
+При активации автоматически создасться таблица <Префикс указанный при установке>currency_rate
+

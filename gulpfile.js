@@ -40,12 +40,12 @@ function php(){
 
 function scripts(){
     return src([
-        'node_modules/jquery/dist/jquery.js',
+        //'node_modules/jquery/dist/jquery.js',
         'app/js/currency.js',
         'app/js/main.js'
     ])
     .pipe(concat('main.min.js'))
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(dest(destFolder + 'js/'))
     .pipe(browserSync.stream())
 }

@@ -12,10 +12,18 @@
 
 }
 
+main{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
 .content{
     display: flex;
     justify-content: center;
-    width: 100%;
+    flex-direction: column;
+    width: 60%;
 }
 
 .form{
@@ -47,6 +55,7 @@
 
 .tabs{
     display: flex;
+    margin-top: 20px;
     &__tab{
         margin: 5px 10px;
     }
@@ -72,9 +81,11 @@
 .currency_rate{
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    width: 100%;
     &__table{
-        width: 60%;
         border-collapse: collapse;
+        width: 100%;
     }
 
     &__table th{
@@ -87,6 +98,37 @@
         border: 1px solid black;
         
     }
+}
+
+.pagination{
+    margin-top: 20px;
+    justify-content: center;
+    display: flex;
+}
+
+.page{
+    border: thin solid blue;
+    text-align: center;
+    width: 20px;
+    margin: 0 2px;
+}
+
+.page:hover{
+    cursor: pointer;
+}
+
+.selected_page{
+    background-color: rgb(164, 190, 238);
+}
+
+.prev, .next{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+
+.filter{
+    width: 100%;
 }
 
 
