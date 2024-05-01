@@ -261,13 +261,13 @@ jQuery(function ($) {
             $(e.target).parent().removeClass('asc');
             $(e.target).parent().addClass('dsc');
             $(e.target).attr('src',MainData.images + 'arrow-down-svgrepo-com.svg');
-            output_data(100, 20, sort_field, 'DESC');
+            output_data(20, 20, sort_field, 'DESC');
 
         } else if ($(e.target).parent().hasClass('dsc')){
             $(e.target).parent().removeClass('dsc');
             $(e.target).parent().addClass('asc');
             $(e.target).attr('src',MainData.images + 'arrow-up-svgrepo-com.svg');
-            output_data(100, 20, sort_field, 'ASC');
+            output_data(20, 20, sort_field, 'ASC');
         }
     })
 
@@ -286,10 +286,10 @@ jQuery(function ($) {
             let values = JSON.parse(result);
             
             // Ищем максимальный элемент
-            let max = values.reduce((prev, curr) => prev.value > curr.value ? prev : curr);
+            let max = values.reduce((prev, curr) => parseFloat(prev.value.replace(',','.')) > parseFloat(curr.value.replace(',','.')) ? prev : curr);
 
             // Ищем минимальный элемент
-            let min = values.reduce((prev, curr) => prev.value < curr.value ? prev : curr);
+            let min = values.reduce((prev, curr) => parseFloat(prev.value.replace(',','.')) < parseFloat(curr.value.replace(',','.')) ? prev : curr);
 
 
             // Настраиваем параметры графика
@@ -316,21 +316,24 @@ jQuery(function ($) {
             let value_per_pixel = (parseFloat(max.value)-parseFloat(min.value))/y_axis_height;
 
             // Вычисляем еденицу времени на пиксель
-            let start = new Date($('#chart_startDate')).getTime();
-            let end = new Date($('#chart_endDate')).getTime();
+            let start = new Date($('#chart_startDate').val()).getTime();
+            let end = new Date($('#chart_endDate').val()).getTime();
             let day = 1000*60*60*24;
             let interval = (end - start + day)/day;
             date_per_pixel = interval / x_axis_width;
-
             // Рисуем график
-            let date = new Date(values[0].date);
-            let xs = y_axis_height - date.getTime()/ date_per_pixel;
-            let ys = parseFloat(values[0].value)/value_per_pixel;
+            let date = new Date(values[0].date).getTime() - start;
+            let value = parseFloat(values[0].value.replace(',','.'));
+            min_value = parseFloat(min.value.replace(',','.')); 
+            let xs = Math.floor(30 +  date / date_per_pixel);
+            let ys = Math.floor(10 + y_axis_height - (value - min_value)/value_per_pixel);
             gctx.moveTo(xs,ys);
             values.forEach(element=> {
-                date = new Date(element.date);
-                x = date.getTime()/date_per_pixel;
-                y = parseFloat(element.value)/value_per_pixel;
+                date = (new Date(element.date).getTime()-start);
+                x = Math.floor(30 +  date/date_per_pixel);
+                value = parseFloat(element.value.replace(',','.'));
+                
+                y = Math.floor(10 + y_axis_height - (value - min_value)/value_per_pixel);
                 gctx.lineTo(x,y);
             })
 
